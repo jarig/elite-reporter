@@ -27,6 +27,7 @@ namespace EliteReporter.Forms
             Properties.Settings.Default.ExportCommandExec = exportExecPathTextBox.Text;
             Properties.Settings.Default.ExportCommandArgs = exportExecArgsTextBox.Text;
             Properties.Settings.Default.MissionCoolDown = int.Parse(missionCoolDownTextBox.Text);
+            Properties.Settings.Default.ExportFilePath = exportFileTextBox.Text;
             Properties.Settings.Default.Save();
             Dispose();
         }
@@ -40,8 +41,9 @@ namespace EliteReporter.Forms
             if (Properties.Settings.Default.Language == Language.Russian.Code)
                 languageComboBox.SelectedItem = Language.Russian;
             exportExecPathTextBox.Text = Properties.Settings.Default.ExportCommandExec;
-            exportExecPathTextBox.Text = Properties.Settings.Default.ExportCommandArgs;
+            exportExecArgsTextBox.Text = Properties.Settings.Default.ExportCommandArgs;
             missionCoolDownTextBox.Text = Properties.Settings.Default.MissionCoolDown.ToString();
+            exportFileTextBox.Text = Properties.Settings.Default.ExportFilePath;
         }
 
         private void closeButton_Click(object sender, EventArgs e)

@@ -40,6 +40,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.exportFileTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -61,7 +63,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(280, 231);
+            this.saveButton.Location = new System.Drawing.Point(276, 258);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 45);
             this.saveButton.TabIndex = 2;
@@ -71,7 +73,7 @@
             // 
             // closeButton
             // 
-            this.closeButton.Location = new System.Drawing.Point(16, 231);
+            this.closeButton.Location = new System.Drawing.Point(12, 258);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 45);
             this.closeButton.TabIndex = 3;
@@ -130,17 +132,36 @@
             // label5
             // 
             this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
             this.label5.Location = new System.Drawing.Point(13, 178);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(296, 13);
+            this.label5.Size = new System.Drawing.Size(293, 13);
             this.label5.TabIndex = 10;
             this.label5.Text = "Use $exportedFile placeholder as reference to a file exported.";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 201);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(119, 13);
+            this.label6.TabIndex = 12;
+            this.label6.Text = "Exported file destination";
+            // 
+            // exportFileTextBox
+            // 
+            this.exportFileTextBox.Location = new System.Drawing.Point(16, 217);
+            this.exportFileTextBox.Name = "exportFileTextBox";
+            this.exportFileTextBox.Size = new System.Drawing.Size(339, 20);
+            this.exportFileTextBox.TabIndex = 11;
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(367, 288);
+            this.ClientSize = new System.Drawing.Size(367, 315);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.exportFileTextBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -176,5 +197,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox exportFileTextBox;
     }
 }

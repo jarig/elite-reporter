@@ -23,6 +23,8 @@ namespace EliteReporter
         private EDAPI edapi;
         private GlobalHotkey ghk;
         private TimeSpan takenMisisonCoolDown = new TimeSpan(0, 0, 40);
+        private string commanderName;
+
         public ReportForm()
         {
             InitializeComponent();
@@ -108,12 +110,11 @@ namespace EliteReporter
             {
                 missions.Add((MissionInfo)row.Tag);
             }
-            var jsonData = JsonConvert.SerializeObject(missions, Formatting.Indented);
+            var jsonData = JsonConvert.SerializeObject(new { Missions = missions, CommanderName = commanderName }, Formatting.Indented);
             //save it
             System.IO.File.WriteAllText(Properties.Settings.Default.ExportFilePath, jsonData);
             toolStripStatusLabel1.Text = "Data saved to: " + Properties.Settings.Default.ExportFilePath +". ";
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.ExportCommandExec) && 
-                System.IO.File.Exists(Properties.Settings.Default.ExportCommandExec))
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.ExportCommandExec))
             {
                 var args = Properties.Settings.Default.ExportCommandArgs;
                 args = args.Replace("$exportedFile", "\""+ Properties.Settings.Default.ExportFilePath) + "\"";
@@ -135,8 +136,7 @@ namespace EliteReporter
 
         private void ReportForm_Load(object sender, EventArgs e)
         {
-            
-
+            activateButton_Click(null, null);
         }
 
         private void showLoginForm()
@@ -168,7 +168,8 @@ namespace EliteReporter
                 //show login form
                 showLoginForm();
             }
-            toolStripStatusLabel1.Text = "Welcome CMDR " + edapi.getProfile().CommanderName + ". ";
+            commanderName = edapi.getProfile().CommanderName;
+            toolStripStatusLabel1.Text = "Welcome CMDR " + commanderName + ". ";
             toolStripStatusLabel1.Text += "Press Activate button to register global hotkey for mission registration (CTRL + ALT + M)";
         }
     }
