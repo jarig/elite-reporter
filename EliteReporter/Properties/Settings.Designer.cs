@@ -85,13 +85,13 @@ namespace EliteReporter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1280, 800")]
-        public global::System.Drawing.Size GameResolution {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PicturesFolder {
             get {
-                return ((global::System.Drawing.Size)(this["GameResolution"]));
+                return ((string)(this["PicturesFolder"]));
             }
             set {
-                this["GameResolution"] = value;
+                this["PicturesFolder"] = value;
             }
         }
     }

@@ -28,6 +28,7 @@ namespace EliteReporter.Forms
             Properties.Settings.Default.ExportCommandArgs = exportExecArgsTextBox.Text;
             Properties.Settings.Default.MissionCoolDown = int.Parse(missionCoolDownTextBox.Text);
             Properties.Settings.Default.ExportFilePath = exportFileTextBox.Text;
+            Properties.Settings.Default.PicturesFolder = picturePathTextBox.Text;
             Properties.Settings.Default.Save();
             Dispose();
         }
@@ -43,6 +44,7 @@ namespace EliteReporter.Forms
             exportExecPathTextBox.Text = Properties.Settings.Default.ExportCommandExec;
             exportExecArgsTextBox.Text = Properties.Settings.Default.ExportCommandArgs;
             missionCoolDownTextBox.Text = Properties.Settings.Default.MissionCoolDown.ToString();
+            picturePathTextBox.Text = Properties.Settings.Default.PicturesFolder;
             exportFileTextBox.Text = Properties.Settings.Default.ExportFilePath;
         }
 

@@ -17,8 +17,8 @@
     <Setting Name="ExportCommandArgs" Type="System.String" Scope="User">
       <Value Profile="(Default)">$exportedFile</Value>
     </Setting>
-    <Setting Name="GameResolution" Type="System.Drawing.Size" Scope="User">
-      <Value Profile="(Default)">1280, 800</Value>
+    <Setting Name="PicturesFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

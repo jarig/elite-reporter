@@ -42,6 +42,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.exportFileTextBox = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.picturePathTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -63,7 +65,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(280, 261);
+            this.saveButton.Location = new System.Drawing.Point(280, 294);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(75, 45);
             this.saveButton.TabIndex = 2;
@@ -73,7 +75,7 @@
             // 
             // closeButton
             // 
-            this.closeButton.Location = new System.Drawing.Point(12, 261);
+            this.closeButton.Location = new System.Drawing.Point(12, 294);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 45);
             this.closeButton.TabIndex = 3;
@@ -155,11 +157,29 @@
             this.exportFileTextBox.Size = new System.Drawing.Size(339, 20);
             this.exportFileTextBox.TabIndex = 11;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(12, 240);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(225, 13);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "Elite Dangerous Path to Pictures(Screenshots)";
+            // 
+            // picturePathTextBox
+            // 
+            this.picturePathTextBox.Location = new System.Drawing.Point(15, 256);
+            this.picturePathTextBox.Name = "picturePathTextBox";
+            this.picturePathTextBox.Size = new System.Drawing.Size(339, 20);
+            this.picturePathTextBox.TabIndex = 13;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(367, 315);
+            this.ClientSize = new System.Drawing.Size(367, 351);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.picturePathTextBox);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.exportFileTextBox);
             this.Controls.Add(this.label5);
@@ -199,5 +219,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox exportFileTextBox;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox picturePathTextBox;
     }
 }

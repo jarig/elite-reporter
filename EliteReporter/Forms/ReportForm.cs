@@ -14,6 +14,7 @@ using System.Windows.Input;
 using DuoVia.FuzzyStrings;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace EliteReporter
 {
@@ -21,93 +22,115 @@ namespace EliteReporter
     {
         private ScreenAnalyzer analyzer;
         private EDAPI edapi;
-        private GlobalHotkey ghk;
         private TimeSpan takenMisisonCoolDown = new TimeSpan(0, 0, 40);
         private string commanderName;
+        private FileSystemWatcher watcher = null;
+        delegate void AnalyzeScreenShotCallback(string text);
 
         public ReportForm()
         {
             InitializeComponent();
             edapi = new EDAPI();
-            ghk = new GlobalHotkey(GlobalHotkey.CTRL + GlobalHotkey.ALT, Keys.M, this);
-            gameResolutionTextBox.Text = string.Format("{0};{1}", Properties.Settings.Default.GameResolution.Width, Properties.Settings.Default.GameResolution.Height);
-        }
 
-        private void RegisterMission()
-        {
-            var result = analyzer.findAndAnalyzeMissionSummaryPage();
-            if (result == null)
-                return;
-            
-            var existingLvItem = missionListView.Items.Cast<ListViewItem>().
-                Where(i => ((MissionInfo)i.Tag).MissionName.FuzzyEquals(result.MissionName)).FirstOrDefault();
-            if (existingLvItem != null)
-            { 
-                //finshing mission
-                if(((MissionInfo)existingLvItem.Tag).MissionTakenDateTime.Add(takenMisisonCoolDown) < DateTime.UtcNow)
-                {
-                    var edProfile = edapi.getProfile();
-                    var missionInfo = (MissionInfo)existingLvItem.Tag;
-                    if (missionInfo.MissionFinishedEDProfile == null)
-                    {
-                        missionInfo.MissionFinishedDateTime = DateTime.UtcNow;
-                        missionInfo.MissionFinishedEDProfile = edProfile;
-                        existingLvItem.SubItems.Add(missionInfo.MissionFinishedDateTime.ToString("dd/MM/yyyy HH:mm"));
-                        existingLvItem.SubItems.Add(missionInfo.MissionFinishedEDProfile.ToString());
-                    }
-                } else
-                {
-                    Trace.TraceInformation("Mission is cooling down still");
-                }
-            } else
+            if(string.IsNullOrEmpty(Properties.Settings.Default.PicturesFolder) || !Directory.Exists(Properties.Settings.Default.PicturesFolder))
             {
-                //new mission
-                var edProfile = edapi.getProfile();
-                if (string.IsNullOrEmpty(commanderName))
-                    commanderName = edProfile.CommanderName;
-                result.MissionTakenDateTime = DateTime.UtcNow;
-                result.MissionTakenEDProfile = edProfile;
-                ListViewItem lvItem = new ListViewItem(result.MissionTakenDateTime.ToString("dd/MM/yyyy HH:mm"));
-                lvItem.SubItems.Add(result.MissionTakenEDProfile.ToString());
-                lvItem.SubItems.Add(result.MissionName);
-                lvItem.Tag = result;
-                missionListView.Items.Add(lvItem);
+                Properties.Settings.Default.PicturesFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + @"\Frontier Developments\Elite Dangerous";
+                Properties.Settings.Default.Save();
             }
         }
 
-        protected override void WndProc(ref Message m)
+        private void RegisterMission(object source, FileSystemEventArgs e)
         {
-            if (m.Msg == GlobalHotkey.WM_HOTKEY_MSG_ID)
-                RegisterMission();
-            base.WndProc(ref m);
+            Trace.TraceInformation("File: " + e.FullPath + " " + e.ChangeType);
+            analyzeScreenShot(e.FullPath);
+        }
+
+        private void analyzeScreenShot(string pathToBmp)
+        {
+            if (analyzer == null)
+                return;
+
+            if (missionListView.InvokeRequired)
+            {
+                AnalyzeScreenShotCallback d = new AnalyzeScreenShotCallback(analyzeScreenShot);
+                Invoke(d, new object[] { pathToBmp });
+            }
+            else
+            {
+
+                var result = analyzer.findAndAnalyzeMissionSummaryPage(pathToBmp);
+                if (result == null)
+                    return;
+
+                var existingLvItem = missionListView.Items.Cast<ListViewItem>().
+                    Where(i => ((MissionInfo)i.Tag).MissionName.FuzzyEquals(result.MissionName)).FirstOrDefault();
+                if (existingLvItem != null)
+                {
+                    //finshing mission
+                    if (((MissionInfo)existingLvItem.Tag).MissionTakenDateTime.Add(takenMisisonCoolDown) < DateTime.UtcNow)
+                    {
+                        var edProfile = edapi.getProfile();
+                        var missionInfo = (MissionInfo)existingLvItem.Tag;
+                        if (missionInfo.MissionFinishedEDProfile == null)
+                        {
+                            missionInfo.MissionFinishedDateTime = DateTime.UtcNow;
+                            missionInfo.MissionFinishedEDProfile = edProfile;
+                            existingLvItem.SubItems.Add(missionInfo.MissionFinishedDateTime.ToString("dd/MM/yyyy HH:mm"));
+                            existingLvItem.SubItems.Add(missionInfo.MissionFinishedEDProfile.ToString());
+                        }
+                    }
+                    else
+                    {
+                        Trace.TraceInformation("Mission is cooling down still");
+                    }
+                }
+                else
+                {
+                    //new mission
+                    var edProfile = edapi.getProfile();
+                    if (string.IsNullOrEmpty(commanderName))
+                        commanderName = edProfile.CommanderName;
+                    result.MissionTakenDateTime = DateTime.UtcNow;
+                    result.MissionTakenEDProfile = edProfile;
+                    ListViewItem lvItem = new ListViewItem(result.MissionTakenDateTime.ToString("dd/MM/yyyy HH:mm"));
+                    lvItem.SubItems.Add(result.MissionTakenEDProfile.ToString());
+                    lvItem.SubItems.Add(result.MissionName);
+                    lvItem.Tag = result;
+                    missionListView.Items.Add(lvItem);
+                }
+            }
         }
 
         private void activateButton_Click(object sender, EventArgs e)
         {
-            if (ghk.Registered)
+            // Begin watching.
+            if (watcher != null && watcher.EnableRaisingEvents)
             {
-                ghk.Unregiser();
+                watcher.EnableRaisingEvents = false;
+                watcher.Dispose();
                 activateButton.Text = "Activate";
-                toolStripStatusLabel1.Text = "Hotkey unregistered.";
             }
             else
             {
+                watcher = new FileSystemWatcher();
+                watcher.Path = Properties.Settings.Default.PicturesFolder;
+                /* Watch for changes in LastAccess and LastWrite times, and
+                   the renaming of files or directories. */
+                watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
+                // Only watch text files.
+                watcher.Filter = "*.bmp";
+
+                // Add event handlers.
+                watcher.Created += new FileSystemEventHandler(RegisterMission);
+                watcher.EnableRaisingEvents = true;
+                analyzer = new ScreenAnalyzer(Properties.Settings.Default.Language);
                 activateButton.Text = "Deactivate";
-                toolStripStatusLabel1.Text = "Watching for missions!";
-                ghk.Register();
-                analyzer = new ScreenAnalyzer(Properties.Settings.Default.Language, Properties.Settings.Default.GameResolution);
+                toolStripStatusLabel1.Text = "Activated, Wathing for screenshots under: " + Properties.Settings.Default.PicturesFolder;
             }
         }
 
         private void exportButton_Click(object sender, EventArgs e)
         {
-            /*var result = analyzer.findAndAnalyzeMissionSummaryPage(true);
-            if (result != null)
-            {
-                var form = new TestForm(result);
-                form.Show();
-            }*/
-
             var missions = new List<MissionInfo>();
             foreach(ListViewItem row in missionListView.Items)
             {
@@ -139,7 +162,7 @@ namespace EliteReporter
 
         private void ReportForm_Load(object sender, EventArgs e)
         {
-            activateButton_Click(null, null);
+            
         }
 
         private void showLoginForm()
@@ -150,7 +173,7 @@ namespace EliteReporter
 
         private void ReportForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ghk.Unregiser();
+            
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -176,24 +199,14 @@ namespace EliteReporter
                 commanderName = edapi.getProfile().CommanderName;
                 if (!string.IsNullOrEmpty(commanderName))
                     toolStripStatusLabel1.Text = "Welcome CMDR " + commanderName + ". ";
+                if (Directory.Exists(Properties.Settings.Default.PicturesFolder))
+                    activateButton_Click(null, null);
+                else
+                {
+                    toolStripStatusLabel1.Text = "Configure pictures folder in settings and press Activate button to start watching for missions!";
+                }
             }
-            toolStripStatusLabel1.Text += "Press Activate button to register global hotkey for mission registration (CTRL + ALT + M)";
-        }
-
-        private void gameResolutionTextBox_TextChanged(object sender, EventArgs e)
-        {
-            try {
-                Properties.Settings.Default.GameResolution = new Size(int.Parse(gameResolutionTextBox.Text.Split(';')[0].Trim()),
-                                                                          int.Parse(gameResolutionTextBox.Text.Split(';')[1].Trim()));
-                if (analyzer != null)
-                    analyzer.ScreenSize = Properties.Settings.Default.GameResolution;
-                toolStripStatusLabel1.Text = "Resolution changed to: " + Properties.Settings.Default.GameResolution;
-                Properties.Settings.Default.Save();
-            } catch (Exception ex)
-            {
-                toolStripStatusLabel1.Text = "Error parsing resolution!";
-            }
-            Properties.Settings.Default.Save();
+            
         }
     }
 }
