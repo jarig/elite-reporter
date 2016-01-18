@@ -13,3 +13,12 @@ and replace Assets/3302.png with it.
 2. Set your game resolution dimensions in upper right corner
 3. Open the game
 4. Once in bulletin board and entered to Mission acceptance screen(the one with Decline/Accept buttons)
+   * Press ALT+ENTER to exit from fullscreen mode(unfortunately current version do not support screencaputring from Direct3D)
+   * Press CTRL+ALT+M to record mission start
+   * Press ALT+ENTER to return to fullscreen mode
+5. Once mission is going to be finished, again open the screen with mission accomplishment buttons(Give Cargo, etc)
+   * Press ALT+ENTER to exit from fullscreen mode
+   * Press CTRL+ALT+M to record mission end
+   * Press ALT+ENTER to return to fullscreen mode
+6. Once all missions are recorded and you quited the game you can export results using Export button
+   * Optionally you can go to Application->Settings and setup any program/script execution that can read provided json and publish results anywhere you want.
