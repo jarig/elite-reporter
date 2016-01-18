@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Language" Type="System.String" Scope="User">
-      <Value Profile="(Default)">en</Value>
+      <Value Profile="(Default)">eng</Value>
     </Setting>
     <Setting Name="ExportFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)">missions.json</Value>
@@ -16,6 +16,9 @@
     </Setting>
     <Setting Name="ExportCommandArgs" Type="System.String" Scope="User">
       <Value Profile="(Default)">$exportedFile</Value>
+    </Setting>
+    <Setting Name="GameResolution" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1280, 800</Value>
     </Setting>
   </Settings>
 </SettingsFile>

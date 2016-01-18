@@ -45,6 +45,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.applicationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gameResolutionTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -124,11 +126,11 @@
             // 
             this.missionDetailTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.missionDetailTextBox.Location = new System.Drawing.Point(632, 26);
+            this.missionDetailTextBox.Location = new System.Drawing.Point(632, 102);
             this.missionDetailTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.missionDetailTextBox.Name = "missionDetailTextBox";
             this.missionDetailTextBox.ReadOnly = true;
-            this.missionDetailTextBox.Size = new System.Drawing.Size(191, 360);
+            this.missionDetailTextBox.Size = new System.Drawing.Size(191, 284);
             this.missionDetailTextBox.TabIndex = 3;
             this.missionDetailTextBox.Text = "";
             // 
@@ -190,11 +192,30 @@
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
+            // gameResolutionTextBox
+            // 
+            this.gameResolutionTextBox.Location = new System.Drawing.Point(633, 51);
+            this.gameResolutionTextBox.Name = "gameResolutionTextBox";
+            this.gameResolutionTextBox.Size = new System.Drawing.Size(190, 20);
+            this.gameResolutionTextBox.TabIndex = 7;
+            this.gameResolutionTextBox.TextChanged += new System.EventHandler(this.gameResolutionTextBox_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(634, 32);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(97, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Resolution in game";
+            // 
             // ReportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(831, 454);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.gameResolutionTextBox);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.exportButton);
@@ -238,6 +259,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem applicationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.TextBox gameResolutionTextBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -25,7 +25,7 @@ namespace EliteReporter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        [global::System.Configuration.DefaultSettingValueAttribute("eng")]
         public string Language {
             get {
                 return ((string)(this["Language"]));
@@ -80,6 +80,18 @@ namespace EliteReporter.Properties {
             }
             set {
                 this["ExportCommandArgs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1280, 800")]
+        public global::System.Drawing.Size GameResolution {
+            get {
+                return ((global::System.Drawing.Size)(this["GameResolution"]));
+            }
+            set {
+                this["GameResolution"] = value;
             }
         }
     }

@@ -20,16 +20,17 @@ namespace EliteReporter.Utils
     {
         private Tesseract ocr;
         private Size baseSize = new Size(1280, 800);
-        private Size testSize = new Size(1280, 800);
-        public ScreenAnalyzer(string languageCode)
+        public Size ScreenSize { get; set; }
+        
+        public ScreenAnalyzer(string languageCode, Size screenSize)
         {
+            ScreenSize = screenSize;
             ocr = new Tesseract("Assets\\", languageCode, OcrEngineMode.TesseractCubeCombined);
-            //ocr.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZ-1234567890");
         }
 
         public MissionInfo findAndAnalyzeMissionSummaryPage(bool includeImages = false)
         {
-            double factor = ((double)testSize.Width / (double)baseSize.Width);
+            double factor = ((double)ScreenSize.Width / (double)baseSize.Width);
             var bounds = new Rectangle(0, 0, Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
             using (var bitmap = new Bitmap(bounds.Width, bounds.Height))
             {

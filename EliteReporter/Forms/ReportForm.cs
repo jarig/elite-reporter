@@ -30,6 +30,7 @@ namespace EliteReporter
             InitializeComponent();
             edapi = new EDAPI();
             ghk = new GlobalHotkey(GlobalHotkey.CTRL + GlobalHotkey.ALT, Keys.M, this);
+            gameResolutionTextBox.Text = string.Format("{0};{1}", Properties.Settings.Default.GameResolution.Width, Properties.Settings.Default.GameResolution.Height);
         }
 
         private void RegisterMission()
@@ -62,6 +63,8 @@ namespace EliteReporter
             {
                 //new mission
                 var edProfile = edapi.getProfile();
+                if (string.IsNullOrEmpty(commanderName))
+                    commanderName = edProfile.CommanderName;
                 result.MissionTakenDateTime = DateTime.UtcNow;
                 result.MissionTakenEDProfile = edProfile;
                 ListViewItem lvItem = new ListViewItem(result.MissionTakenDateTime.ToString("dd/MM/yyyy HH:mm"));
@@ -92,7 +95,7 @@ namespace EliteReporter
                 activateButton.Text = "Deactivate";
                 toolStripStatusLabel1.Text = "Watching for missions!";
                 ghk.Register();
-                analyzer = new ScreenAnalyzer(Properties.Settings.Default.Language);
+                analyzer = new ScreenAnalyzer(Properties.Settings.Default.Language, Properties.Settings.Default.GameResolution);
             }
         }
 
@@ -168,9 +171,29 @@ namespace EliteReporter
                 //show login form
                 showLoginForm();
             }
-            commanderName = edapi.getProfile().CommanderName;
-            toolStripStatusLabel1.Text = "Welcome CMDR " + commanderName + ". ";
+            else
+            {
+                commanderName = edapi.getProfile().CommanderName;
+                if (!string.IsNullOrEmpty(commanderName))
+                    toolStripStatusLabel1.Text = "Welcome CMDR " + commanderName + ". ";
+            }
             toolStripStatusLabel1.Text += "Press Activate button to register global hotkey for mission registration (CTRL + ALT + M)";
+        }
+
+        private void gameResolutionTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try {
+                Properties.Settings.Default.GameResolution = new Size(int.Parse(gameResolutionTextBox.Text.Split(';')[0].Trim()),
+                                                                          int.Parse(gameResolutionTextBox.Text.Split(';')[1].Trim()));
+                if (analyzer != null)
+                    analyzer.ScreenSize = Properties.Settings.Default.GameResolution;
+                toolStripStatusLabel1.Text = "Resolution changed to: " + Properties.Settings.Default.GameResolution;
+                Properties.Settings.Default.Save();
+            } catch (Exception ex)
+            {
+                toolStripStatusLabel1.Text = "Error parsing resolution!";
+            }
+            Properties.Settings.Default.Save();
         }
     }
 }
