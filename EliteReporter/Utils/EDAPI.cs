@@ -44,7 +44,7 @@ namespace EliteReporter.Utils
             }
         }
 
-        private ResponseData makeRequest(string uri, Dictionary<string, string> values = null)
+        private ResponseData makeRequest(string uri, Dictionary<string, string> values = null, string rawData = "", string method = null)
         {
             if (uri.Equals("/"))
                 uri = "";
@@ -53,20 +53,26 @@ namespace EliteReporter.Utils
             request.UserAgent = agent;
             var cc = new CookieContainer();
             cc.Add(cookieContainer.GetCookies(new Uri(baseUrl)));
-            request.CookieContainer = cookieContainer;
-            if (values == null)
+            request.CookieContainer = cc;
+            if (values == null && string.IsNullOrEmpty(rawData))
                 request.Method = "GET";
             else
             {
-                request.Method = "POST";
-                string postData = "";
+                if (method == null)
+                    request.Method = "POST";
+                else
+                    request.Method = method;
+                string postData = rawData;
 
-                foreach (string key in values.Keys)
+                if (values != null)
                 {
-                    postData += HttpUtility.UrlEncode(key) + "="
-                          + HttpUtility.UrlEncode(values[key]) + "&";
+                    foreach (string key in values.Keys)
+                    {
+                        postData += HttpUtility.UrlEncode(key) + "="
+                              + HttpUtility.UrlEncode(values[key]) + "&";
+                    }
+                    postData = postData.TrimEnd('&');
                 }
-                postData = postData.TrimEnd('&');
                 byte[] data = Encoding.ASCII.GetBytes(postData);
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.ContentLength = data.Length;
@@ -117,7 +123,7 @@ namespace EliteReporter.Utils
                     }
                 }
                 if (resp.Headers["Location"] != null)
-                    return makeRequest(resp.Headers["Location"], values);
+                    return makeRequest(resp.Headers["Location"], null, responseText, resp.Method);
                 return new ResponseData()
                 {
                     Text = responseText,

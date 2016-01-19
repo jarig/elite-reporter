@@ -48,8 +48,7 @@ namespace EliteReporter.Forms
                     var profile = edapi.getProfile();
                     if (profile != null)
                     {
-                        MessageBox.Show("Greetings commander " + profile.CommanderName, "Welcome!");
-                        Dispose();
+                        this.DialogResult = DialogResult.OK;
                     }
                     else
                     {
@@ -66,6 +65,7 @@ namespace EliteReporter.Forms
 
         private void closeButton_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             this.Dispose();
         }
 

@@ -56,7 +56,7 @@
             this.activateButton.Name = "activateButton";
             this.activateButton.Size = new System.Drawing.Size(86, 40);
             this.activateButton.TabIndex = 0;
-            this.activateButton.Text = "Activate";
+            this.activateButton.Text = "Login";
             this.activateButton.UseVisualStyleBackColor = true;
             this.activateButton.Click += new System.EventHandler(this.activateButton_Click);
             // 

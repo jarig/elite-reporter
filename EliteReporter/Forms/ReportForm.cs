@@ -103,6 +103,11 @@ namespace EliteReporter
 
         private void activateButton_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(commanderName))
+            {
+                initialize();
+                return;
+            }
             // Begin watching.
             if (watcher != null && watcher.EnableRaisingEvents)
             {
@@ -165,12 +170,6 @@ namespace EliteReporter
             
         }
 
-        private void showLoginForm()
-        {
-            var loginForm = new LoginForm(edapi);
-            loginForm.Show();
-        }
-
         private void ReportForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             
@@ -187,26 +186,35 @@ namespace EliteReporter
             Dispose();
         }
 
-        private void ReportForm_Shown(object sender, EventArgs e)
+        private void initialize()
         {
             if (edapi.isLoginRequired())
             {
                 //show login form
-                showLoginForm();
+                var loginForm = new LoginForm(edapi);
+                if (loginForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    toolStripStatusLabel1.Text = "Login was cancelled.";
+                    activateButton.Text = "Login";
+                    return;
+                }
+                else
+                    loginForm.Dispose();
             }
+            commanderName = edapi.getProfile().CommanderName;
+            if (!string.IsNullOrEmpty(commanderName))
+                toolStripStatusLabel1.Text = "Welcome CMDR " + commanderName + ". ";
+            if (Directory.Exists(Properties.Settings.Default.PicturesFolder))
+                activateButton_Click(null, null);
             else
             {
-                commanderName = edapi.getProfile().CommanderName;
-                if (!string.IsNullOrEmpty(commanderName))
-                    toolStripStatusLabel1.Text = "Welcome CMDR " + commanderName + ". ";
-                if (Directory.Exists(Properties.Settings.Default.PicturesFolder))
-                    activateButton_Click(null, null);
-                else
-                {
-                    toolStripStatusLabel1.Text = "Configure pictures folder in settings and press Activate button to start watching for missions!";
-                }
+                toolStripStatusLabel1.Text = "Configure pictures folder in settings and press Activate button to start watching for missions!";
             }
-            
+        }
+
+        private void ReportForm_Shown(object sender, EventArgs e)
+        {
+            initialize();
         }
     }
 }
