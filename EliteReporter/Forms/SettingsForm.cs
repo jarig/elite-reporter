@@ -37,10 +37,7 @@ namespace EliteReporter.Forms
         {
             languageComboBox.Items.Add(Language.English);
             languageComboBox.Items.Add(Language.Russian);
-            if (Properties.Settings.Default.Language == Language.English.Code)
-                languageComboBox.SelectedItem = Language.English;
-            if (Properties.Settings.Default.Language == Language.Russian.Code)
-                languageComboBox.SelectedItem = Language.Russian;
+            languageComboBox.SelectedItem = Language.codeToLanguage(Properties.Settings.Default.Language);
             exportExecPathTextBox.Text = Properties.Settings.Default.ExportCommandExec;
             exportExecArgsTextBox.Text = Properties.Settings.Default.ExportCommandArgs;
             missionCoolDownTextBox.Text = Properties.Settings.Default.MissionCoolDown.ToString();

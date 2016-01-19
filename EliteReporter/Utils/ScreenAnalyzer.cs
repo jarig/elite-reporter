@@ -22,21 +22,21 @@ namespace EliteReporter.Utils
     {
         private Tesseract ocr;
         private Size baseSize = new Size(1280, 800);
-        private Size screenSize;
-        private string displaySettingsPath;
+        private Language.LanguageType language;
         
         public ScreenAnalyzer(string languageCode)
         {
-            ocr = new Tesseract("Assets\\", languageCode, OcrEngineMode.TesseractCubeCombined);
+            this.language = Language.codeToLanguage(languageCode);
+            ocr = new Tesseract("Assets\\", languageCode, language.OcrMode);
+            //ocr.SetVariable("tessedit_char_whitelist", language.OcrWhitelist);
         }
 
         public MissionInfo findAndAnalyzeMissionSummaryPage(string pathToBmp, bool includeImages = false)
         {
-            Image<Bgr, byte> source = new Image<Bgr, byte>(pathToBmp); // Image B
-            double factor = ((double)source.Width / (double)source.Width);
-            Image<Bgr, byte> yearTemplate = new Image<Bgr, byte>("Assets\\3302.png"); // Image A
+            Image<Gray, byte> source = new Image<Gray, byte>(pathToBmp); // Image B
+            double factor = ((double)source.Width / (double)baseSize.Width);
+            Image<Gray, byte> yearTemplate = new Image<Gray, byte>("Assets\\3302_"+ language.Code + ".bmp"); // Image A
             yearTemplate = yearTemplate.Resize(factor, Emgu.CV.CvEnum.Inter.Cubic);
-            Image<Bgr, byte> imageToShow = source.Copy();
 
             using (Image<Gray, float> result = source.MatchTemplate(yearTemplate, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
             {
@@ -50,7 +50,10 @@ namespace EliteReporter.Utils
                     //mission name
                     var match = new Rectangle(new Point(maxLocations[0].X + yearTemplate.Width + (int)(105 * factor), maxLocations[0].Y - (int)(25 * factor)),
                                       new Size((int)(650 * factor), (int)(40 * factor)));
-                    var missionRegion = imageToShow.GetSubRect(match);
+                    //match = new Rectangle(new Point(maxLocations[0].X, maxLocations[0].Y), new Size(yearTemplate.Width, yearTemplate.Height));
+                    var missionRegion = source.GetSubRect(match);
+                    //imageToShow.Draw(match, new Gray(255), 3);
+                    //imageToShow.ToBitmap().Save("E:\\test.bmp");
                     if (missionRegion.Width < 850)
                         missionRegion = missionRegion.Resize((double)850 / missionRegion.Width, Emgu.CV.CvEnum.Inter.Cubic);
                     ocr.Recognize(missionRegion.Convert<Gray, byte>());

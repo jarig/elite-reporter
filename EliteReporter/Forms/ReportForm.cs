@@ -63,7 +63,7 @@ namespace EliteReporter
                     return;
 
                 var existingLvItem = missionListView.Items.Cast<ListViewItem>().
-                    Where(i => ((MissionInfo)i.Tag).MissionName.FuzzyEquals(result.MissionName)).FirstOrDefault();
+                    Where(i => ((MissionInfo)i.Tag).MissionName.LevenshteinDistance(result.MissionName) <= 3).FirstOrDefault();
                 if (existingLvItem != null)
                 {
                     //finshing mission
@@ -113,10 +113,17 @@ namespace EliteReporter
             {
                 watcher.EnableRaisingEvents = false;
                 watcher.Dispose();
+                watcher = null;
                 activateButton.Text = "Activate";
+                settingsToolStripMenuItem.Enabled = true;
+                settingsToolStripMenuItem.ToolTipText = "";
+                toolStripStatusLabel1.Text = "Press Activate to start watching for missions";
             }
             else
             {
+                settingsToolStripMenuItem.Enabled = false;
+                settingsToolStripMenuItem.ToolTipText = "Deactivate to change settings.";
+                
                 watcher = new FileSystemWatcher();
                 watcher.Path = Properties.Settings.Default.PicturesFolder;
                 /* Watch for changes in LastAccess and LastWrite times, and
