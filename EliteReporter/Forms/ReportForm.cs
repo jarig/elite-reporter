@@ -15,6 +15,7 @@ using DuoVia.FuzzyStrings;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
+using System.Threading;
 
 namespace EliteReporter
 {
@@ -22,26 +23,30 @@ namespace EliteReporter
     {
         private ScreenAnalyzer analyzer;
         private EDAPI edapi;
-        private TimeSpan takenMisisonCoolDown = new TimeSpan(0, 0, 40);
+        private TimeSpan takenMisisonCoolDown;
         private string commanderName;
         private FileSystemWatcher watcher = null;
         delegate void AnalyzeScreenShotCallback(string text);
 
+        private AnalyzeScreenShotCallback callback;
         public ReportForm()
         {
             InitializeComponent();
             edapi = new EDAPI();
-
-            if(string.IsNullOrEmpty(Properties.Settings.Default.PicturesFolder) || !Directory.Exists(Properties.Settings.Default.PicturesFolder))
+            takenMisisonCoolDown = new TimeSpan(0, 0, Properties.Settings.Default.MissionCoolDown);
+            if (string.IsNullOrEmpty(Properties.Settings.Default.PicturesFolder) || !Directory.Exists(Properties.Settings.Default.PicturesFolder))
             {
                 Properties.Settings.Default.PicturesFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + @"\Frontier Developments\Elite Dangerous";
                 Properties.Settings.Default.Save();
             }
+            Properties.Settings.Default.SettingsSaving += onSettingsChanged;
+            callback = new AnalyzeScreenShotCallback(analyzeScreenShot);
         }
 
         private void RegisterMission(object source, FileSystemEventArgs e)
         {
             Trace.TraceInformation("File: " + e.FullPath + " " + e.ChangeType);
+            Thread.Sleep(500); // wait until file is ready
             analyzeScreenShot(e.FullPath);
         }
 
@@ -52,15 +57,16 @@ namespace EliteReporter
 
             if (missionListView.InvokeRequired)
             {
-                AnalyzeScreenShotCallback d = new AnalyzeScreenShotCallback(analyzeScreenShot);
-                Invoke(d, new object[] { pathToBmp });
+                missionListView.BeginInvoke(callback, new object []{ pathToBmp });
             }
             else
             {
-
                 var result = analyzer.findAndAnalyzeMissionSummaryPage(pathToBmp);
                 if (result == null)
+                {
+                    Trace.TraceInformation("Can't recognize anything from pic: " + pathToBmp);
                     return;
+                }
 
                 var existingLvItem = missionListView.Items.Cast<ListViewItem>().
                     Where(i => ((MissionInfo)i.Tag).MissionName.LevenshteinDistance(result.MissionName) <= 3).FirstOrDefault();
@@ -81,6 +87,7 @@ namespace EliteReporter
                     }
                     else
                     {
+                        toolStripStatusLabel1.Text = "Mission \""+ ((MissionInfo)existingLvItem.Tag).MissionName +"\" is cooling down still.";
                         Trace.TraceInformation("Mission is cooling down still");
                     }
                 }
@@ -101,6 +108,21 @@ namespace EliteReporter
             }
         }
 
+
+        private void onSettingsChanged(object sender, CancelEventArgs e)
+        {
+            if (analyzer != null)
+            {
+                analyzer.Dispose();
+                analyzer = new ScreenAnalyzer(Properties.Settings.Default.Language);
+            }
+            if (watcher != null)
+            {
+                watcher.Path = Properties.Settings.Default.PicturesFolder;
+            }
+            takenMisisonCoolDown = new TimeSpan(0, 0, Properties.Settings.Default.MissionCoolDown);
+        }
+
         private void activateButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(commanderName))
@@ -115,19 +137,12 @@ namespace EliteReporter
                 watcher.Dispose();
                 watcher = null;
                 activateButton.Text = "Activate";
-                settingsToolStripMenuItem.Enabled = true;
-                settingsToolStripMenuItem.ToolTipText = "";
                 toolStripStatusLabel1.Text = "Press Activate to start watching for missions";
             }
             else
-            {
-                settingsToolStripMenuItem.Enabled = false;
-                settingsToolStripMenuItem.ToolTipText = "Deactivate to change settings.";
-                
+            {   
                 watcher = new FileSystemWatcher();
                 watcher.Path = Properties.Settings.Default.PicturesFolder;
-                /* Watch for changes in LastAccess and LastWrite times, and
-                   the renaming of files or directories. */
                 watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
                 // Only watch text files.
                 watcher.Filter = "*.bmp";
@@ -135,6 +150,8 @@ namespace EliteReporter
                 // Add event handlers.
                 watcher.Created += new FileSystemEventHandler(RegisterMission);
                 watcher.EnableRaisingEvents = true;
+                if (analyzer != null)
+                    analyzer.Dispose();
                 analyzer = new ScreenAnalyzer(Properties.Settings.Default.Language);
                 activateButton.Text = "Deactivate";
                 toolStripStatusLabel1.Text = "Activated, Wathing for screenshots under: " + Properties.Settings.Default.PicturesFolder;

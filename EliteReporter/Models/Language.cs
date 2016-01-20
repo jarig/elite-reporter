@@ -46,5 +46,14 @@ namespace EliteReporter.Models
             OcrMode = OcrEngineMode.TesseractCubeCombined,
             OcrWhitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'\""
         };
+
+        public static List<LanguageType> getAllLanguages()
+        {
+            return new List<LanguageType>()
+            {
+                Russian,
+                English
+            };
+        }
     }
 }

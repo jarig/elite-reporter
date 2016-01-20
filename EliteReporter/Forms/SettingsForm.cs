@@ -35,8 +35,7 @@ namespace EliteReporter.Forms
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            languageComboBox.Items.Add(Language.English);
-            languageComboBox.Items.Add(Language.Russian);
+            languageComboBox.Items.AddRange(Language.getAllLanguages().ToArray());
             languageComboBox.SelectedItem = Language.codeToLanguage(Properties.Settings.Default.Language);
             exportExecPathTextBox.Text = Properties.Settings.Default.ExportCommandExec;
             exportExecArgsTextBox.Text = Properties.Settings.Default.ExportCommandArgs;
