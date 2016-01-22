@@ -16,6 +16,7 @@ using EliteReporter.Models;
 using System.Xml;
 using System.Xml.Linq;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace EliteReporter.Utils
 {
@@ -30,6 +31,11 @@ namespace EliteReporter.Utils
             this.language = Language.codeToLanguage(languageCode);
             ocr = new Tesseract("Assets\\", languageCode, language.OcrMode);
             //ocr.SetVariable("tessedit_char_whitelist", language.OcrWhitelist);
+        }
+
+        public Language.LanguageType getLanguage()
+        {
+            return language;
         }
 
         public void Dispose()
@@ -56,6 +62,9 @@ namespace EliteReporter.Utils
             double heightFactor = ((double)source.Height / (double)baseSize.Height);
             Image<Gray, byte> yearTemplate = new Image<Gray, byte>("Assets\\3302_" + language.Code + ".bmp"); // Image A
             yearTemplate = yearTemplate.Resize(widthFactor, Emgu.CV.CvEnum.Inter.Cubic);
+            Image<Gray, byte> rewardTemplate = new Image<Gray, byte>("Assets\\reward_" + language.Code + ".bmp"); // Image A
+            rewardTemplate = rewardTemplate.Resize(widthFactor, Emgu.CV.CvEnum.Inter.Cubic);
+            MissionInfo missionInfo = new MissionInfo();
             try {
                 using (Image<Gray, float> result = source.MatchTemplate(yearTemplate, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
                 {
@@ -63,7 +72,6 @@ namespace EliteReporter.Utils
                     Point[] minLocations, maxLocations;
                     result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
 
-                    // You can try different values of the threshold. I guess somewhere between 0.75 and 0.95 would be good.
                     if (maxValues[0] > 0.7)
                     {
                         //mission name
@@ -84,26 +92,61 @@ namespace EliteReporter.Utils
                             var words = ocr.GetText();
                             var missionName = words.Replace("\r\n", " ").Trim();
                             Trace.TraceInformation("Mission name: " + missionName);
-                            var missionInfo = new MissionInfo()
-                            {
-                                MissionName = missionName
-                            };
+                            missionInfo.MissionName = missionName;
                             if (includeImages)
                             {
                                 missionInfo.Images.Add(missionRegion.ToBitmap());
                             }
-                            return missionInfo;
                         }
                         finally
                         {
                             missionRegion.Dispose();
                         }
+                        
                     }
                 }
+                using (Image<Gray, float> result = source.MatchTemplate(rewardTemplate, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
+                {
+                    double[] minValues, maxValues;
+                    Point[] minLocations, maxLocations;
+                    result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
+
+                    // You can try different values of the threshold. I guess somewhere between 0.75 and 0.95 would be good.
+                    if (maxValues[0] > 0.7)
+                    {
+                        int reward = 0;
+                        // reward
+                        var match = new Rectangle(new Point(maxLocations[0].X + rewardTemplate.Width + (int)(210 * widthFactor),
+                                                        maxLocations[0].Y),
+                                              new Size((int)(210 * widthFactor), rewardTemplate.Height));
+                        if (match.X + match.Width > source.Width || match.Y + match.Height > source.Height)
+                        {
+                            return missionInfo;
+                        }
+                        var rewardRegion = source.GetSubRect(match);
+                        try
+                        {
+                            if (rewardRegion.Height < 20)
+                                rewardRegion = rewardRegion.Resize((double)20 / rewardRegion.Height, Emgu.CV.CvEnum.Inter.Cubic);
+                            ocr.Recognize(rewardRegion.Convert<Gray, byte>());
+                            var words = ocr.GetText();
+                            int.TryParse(Regex.Replace(words, @"[^0-9$]", "").Trim(), out reward);
+                            Trace.TraceInformation("Reward: " + reward);
+                            missionInfo.Reward = reward;
+                        }
+                        finally
+                        {
+                            rewardRegion.Dispose();
+                        }
+                    }
+                }
+
+                return missionInfo;
             } finally
             {
                 source.Dispose();
                 yearTemplate.Dispose();
+                rewardTemplate.Dispose();
             }
             return null;
         }

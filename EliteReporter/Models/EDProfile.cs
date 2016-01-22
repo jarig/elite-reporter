@@ -18,6 +18,8 @@ namespace EliteReporter.Models
 
         public override string ToString()
         {
+            if (string.IsNullOrEmpty(SystemName) && string.IsNullOrEmpty(PortName))
+                return "";
             return string.Format("{0}/{1}", SystemName, PortName);
         }
     }

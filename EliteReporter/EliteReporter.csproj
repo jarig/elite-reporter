@@ -185,6 +185,12 @@
     <Compile Include="Forms\ConfirmationCodeForm.Designer.cs">
       <DependentUpon>ConfirmationCodeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\EditMissionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\EditMissionForm.Designer.cs">
+      <DependentUpon>EditMissionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -220,6 +226,9 @@
     <Compile Include="Utils\ScreenAnalyzer.cs" />
     <EmbeddedResource Include="Forms\ConfirmationCodeForm.resx">
       <DependentUpon>ConfirmationCodeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EditMissionForm.resx">
+      <DependentUpon>EditMissionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
@@ -309,6 +318,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\3302_rus.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\reward_eng.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\reward_rus.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

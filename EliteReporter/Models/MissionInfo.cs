@@ -11,10 +11,10 @@ namespace EliteReporter.Models
     public class MissionInfo
     {
         public string MissionName { get; set; }
-        //public string StationName { get; set; }
+        public int Reward { get; set; }
 
-        public DateTime MissionTakenDateTime { get; set; }
-        public DateTime MissionFinishedDateTime { get; set; }
+        public DateTime? MissionTakenDateTime { get; set; }
+        public DateTime? MissionFinishedDateTime { get; set; }
         public EDProfile MissionTakenEDProfile { get; set; }
         public EDProfile MissionFinishedEDProfile { get; set; }
 

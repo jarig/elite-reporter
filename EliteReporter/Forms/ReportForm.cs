@@ -62,7 +62,7 @@ namespace EliteReporter
             else
             {
                 var result = analyzer.findAndAnalyzeMissionSummaryPage(pathToBmp);
-                if (result == null)
+                if (result == null || result.MissionName == null)
                 {
                     Trace.TraceInformation("Can't recognize anything from pic: " + pathToBmp);
                     return;
@@ -73,7 +73,7 @@ namespace EliteReporter
                 if (existingLvItem != null)
                 {
                     //finshing mission
-                    if (((MissionInfo)existingLvItem.Tag).MissionTakenDateTime.Add(takenMisisonCoolDown) < DateTime.UtcNow)
+                    if (((MissionInfo)existingLvItem.Tag).MissionTakenDateTime.Value.Add(takenMisisonCoolDown) < DateTime.UtcNow)
                     {
                         var edProfile = edapi.getProfile();
                         var missionInfo = (MissionInfo)existingLvItem.Tag;
@@ -81,8 +81,7 @@ namespace EliteReporter
                         {
                             missionInfo.MissionFinishedDateTime = DateTime.UtcNow;
                             missionInfo.MissionFinishedEDProfile = edProfile;
-                            existingLvItem.SubItems.Add(missionInfo.MissionFinishedDateTime.ToString("dd/MM/yyyy HH:mm"));
-                            existingLvItem.SubItems.Add(missionInfo.MissionFinishedEDProfile.ToString());
+                            fillMissionListViewItem(existingLvItem, missionInfo);
                         }
                     }
                     else
@@ -99,10 +98,12 @@ namespace EliteReporter
                         commanderName = edProfile.CommanderName;
                     result.MissionTakenDateTime = DateTime.UtcNow;
                     result.MissionTakenEDProfile = edProfile;
-                    ListViewItem lvItem = new ListViewItem(result.MissionTakenDateTime.ToString("dd/MM/yyyy HH:mm"));
-                    lvItem.SubItems.Add(result.MissionTakenEDProfile.ToString());
-                    lvItem.SubItems.Add(result.MissionName);
+                    ListViewItem lvItem = new ListViewItem();
                     lvItem.Tag = result;
+                    string[] str = new string[missionListView.Columns.Count];
+                    for (int i = 0; i < str.Length; i++) { str[i] = ""; }
+                    lvItem.SubItems.AddRange(str);
+                    fillMissionListViewItem(lvItem, result);
                     missionListView.Items.Add(lvItem);
                 }
             }
@@ -111,16 +112,17 @@ namespace EliteReporter
 
         private void onSettingsChanged(object sender, CancelEventArgs e)
         {
-            if (analyzer != null)
+            if (analyzer != null && analyzer.getLanguage().Code != Properties.Settings.Default.Language)
             {
                 analyzer.Dispose();
                 analyzer = new ScreenAnalyzer(Properties.Settings.Default.Language);
             }
-            if (watcher != null)
+            if (watcher != null && watcher.Path != Properties.Settings.Default.PicturesFolder)
             {
                 watcher.Path = Properties.Settings.Default.PicturesFolder;
             }
-            takenMisisonCoolDown = new TimeSpan(0, 0, Properties.Settings.Default.MissionCoolDown);
+            if(takenMisisonCoolDown.TotalSeconds != Properties.Settings.Default.MissionCoolDown)
+                takenMisisonCoolDown = new TimeSpan(0, 0, Properties.Settings.Default.MissionCoolDown);
         }
 
         private void activateButton_Click(object sender, EventArgs e)
@@ -239,6 +241,47 @@ namespace EliteReporter
         private void ReportForm_Shown(object sender, EventArgs e)
         {
             initialize();
+        }
+
+        private void deleteButton_Click(object sender, EventArgs e)
+        {
+            if(MessageBox.Show("Delete selected missions?", "Confirm removal", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                for (int i = missionListView.SelectedItems.Count - 1; i >= 0; i--)
+                {
+                    ListViewItem itm = missionListView.SelectedItems[i];
+                    missionListView.Items[itm.Index].Remove();
+                }
+            }
+        }
+
+        private void missionListView_DoubleClick(object sender, EventArgs e)
+        {
+            var selItems = missionListView.SelectedItems;
+            if (selItems.Count > 0)
+            {
+                var mInfo = (MissionInfo)selItems[0].Tag;
+                var form = new EditMissionForm(mInfo);
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    fillMissionListViewItem(selItems[0], mInfo);
+                }
+                form.Dispose();
+            }
+        }
+
+        private void fillMissionListViewItem(ListViewItem vItem, MissionInfo mInfo)
+        {
+            vItem.Text = mInfo.MissionTakenDateTime.Value.ToString("dd.MM.yyyy HH:mm");
+            vItem.SubItems[missionNameHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.MissionName);
+            vItem.SubItems[startSystemHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.MissionTakenEDProfile.ToString());
+            vItem.SubItems[rewardHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.Reward.ToString());
+            if (mInfo.MissionFinishedDateTime != null)
+                vItem.SubItems[endDateHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.MissionFinishedDateTime.Value.ToString("dd.MM.yyyy HH:mm"));
+            if (mInfo.MissionFinishedEDProfile != null)
+            {    
+                vItem.SubItems[endSystemHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.MissionFinishedEDProfile.ToString());
+            }
         }
     }
 }

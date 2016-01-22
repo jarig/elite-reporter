@@ -44,6 +44,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.applicationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rewardHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.deleteButton = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -70,17 +72,19 @@
             this.startSystemHeader,
             this.missionNameHeader,
             this.endDateHeader,
-            this.endSystemHeader});
+            this.endSystemHeader,
+            this.rewardHeader});
             this.missionListView.FullRowSelect = true;
-            this.missionListView.LabelEdit = true;
             this.missionListView.Location = new System.Drawing.Point(9, 26);
             this.missionListView.Margin = new System.Windows.Forms.Padding(2);
             this.missionListView.Name = "missionListView";
+            this.missionListView.ShowItemToolTips = true;
             this.missionListView.Size = new System.Drawing.Size(814, 360);
             this.missionListView.TabIndex = 1;
             this.missionListView.UseCompatibleStateImageBehavior = false;
             this.missionListView.View = System.Windows.Forms.View.Details;
             this.missionListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.missionListView_AfterLabelEdit);
+            this.missionListView.DoubleClick += new System.EventHandler(this.missionListView_DoubleClick);
             // 
             // startDateHeader
             // 
@@ -178,11 +182,29 @@
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
+            // rewardHeader
+            // 
+            this.rewardHeader.Text = "Reward";
+            this.rewardHeader.Width = 70;
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.deleteButton.Location = new System.Drawing.Point(101, 390);
+            this.deleteButton.Margin = new System.Windows.Forms.Padding(2);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(86, 40);
+            this.deleteButton.TabIndex = 7;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
+            // 
             // ReportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(831, 454);
+            this.Controls.Add(this.deleteButton);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.exportButton);
@@ -224,6 +246,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem applicationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader rewardHeader;
+        private System.Windows.Forms.Button deleteButton;
     }
 }
 
