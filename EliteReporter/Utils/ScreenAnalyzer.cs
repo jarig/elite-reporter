@@ -105,6 +105,7 @@ namespace EliteReporter.Utils
                         
                     }
                 }
+                source = source.GetSubRect(new Rectangle((int)(450*widthFactor), 0, source.Width - (int)(450*widthFactor), source.Height));
                 using (Image<Gray, float> result = source.MatchTemplate(rewardTemplate, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
                 {
                     double[] minValues, maxValues;
@@ -112,11 +113,11 @@ namespace EliteReporter.Utils
                     result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
 
                     // You can try different values of the threshold. I guess somewhere between 0.75 and 0.95 would be good.
-                    if (maxValues[0] > 0.7)
+                    if (maxValues[0] > 0.65)
                     {
                         int reward = 0;
                         // reward
-                        var match = new Rectangle(new Point(maxLocations[0].X + rewardTemplate.Width + (int)(210 * widthFactor),
+                        var match = new Rectangle(new Point(maxLocations[0].X + rewardTemplate.Width,
                                                         maxLocations[0].Y),
                                               new Size((int)(210 * widthFactor), rewardTemplate.Height));
                         if (match.X + match.Width > source.Width || match.Y + match.Height > source.Height)
