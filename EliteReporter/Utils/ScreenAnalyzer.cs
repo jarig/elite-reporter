@@ -105,7 +105,7 @@ namespace EliteReporter.Utils
                         
                     }
                 }
-                source = source.GetSubRect(new Rectangle((int)(450*widthFactor), 0, source.Width - (int)(450*widthFactor), source.Height));
+                source = source.GetSubRect(new Rectangle((int)(450*widthFactor), 0, source.Width - (int)(450*widthFactor) - 10, source.Height));
                 using (Image<Gray, float> result = source.MatchTemplate(rewardTemplate, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
                 {
                     double[] minValues, maxValues;
