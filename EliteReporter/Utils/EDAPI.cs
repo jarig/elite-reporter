@@ -194,6 +194,7 @@ namespace EliteReporter.Utils
                 };
             } catch (Exception ex)
             {
+                Trace.TraceInformation("Failed to get profile: " + ex.Message);
                 return null;
             }
         }

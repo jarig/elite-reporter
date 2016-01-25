@@ -24,6 +24,7 @@ namespace EliteReporter.Forms
         private void changeButton_Click(object sender, EventArgs e)
         {
             mInfo.MissionName = missionNameTextBox.Text;
+            mInfo.MissionType = missionTypeTextBox.Text;
             try
             {
                 mInfo.MissionTakenDateTime = DateTime.ParseExact(dateTakenTextBox.Text, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture);
@@ -59,6 +60,8 @@ namespace EliteReporter.Forms
             dateTakenTextBox.Text = mInfo.MissionTakenDateTime.Value.ToString("dd.MM.yyyy HH:mm");
             stationTakenTextBox.Text = mInfo.MissionTakenEDProfile.PortName;
             systemTakenTextBox.Text = mInfo.MissionTakenEDProfile.SystemName;
+            if (mInfo.MissionType != null)
+                missionTypeTextBox.Text = mInfo.MissionType;
             if (mInfo.MissionFinishedEDProfile != null)
             {
                 stationFinishTextBox.Text = mInfo.MissionFinishedEDProfile.PortName;

@@ -112,7 +112,6 @@ namespace EliteReporter.Utils
                     Point[] minLocations, maxLocations;
                     result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
 
-                    // You can try different values of the threshold. I guess somewhere between 0.75 and 0.95 would be good.
                     if (maxValues[0] > 0.65)
                     {
                         int reward = 0;
@@ -141,7 +140,23 @@ namespace EliteReporter.Utils
                         }
                     }
                 }
-
+                source = source.GetSubRect(new Rectangle(0, 0, source.Width, source.Height - (int)(600*heightFactor)));
+                // find mission type
+                var missionTypePatterns = Directory.GetFiles("Assets\\mTypes", "*.bmp");
+                List<Task<Tuple<string, double>>> tasks = new List<Task<Tuple<string, double>>>();
+                foreach(var file in missionTypePatterns)
+                {
+                    tasks.Add(Task.Run(() => { return getMissionType(source, file, widthFactor, heightFactor); }));
+                }
+                Task.WaitAll(tasks.ToArray());
+                Tuple<string, double> maxScore = null;
+                foreach (var res in tasks)
+                {
+                    if (res.Result != null && res.Result.Item2 > 0.5 && (maxScore == null || maxScore.Item2 < res.Result.Item2))
+                        maxScore = res.Result;
+                }
+                if (maxScore != null)
+                    missionInfo.MissionType = maxScore.Item1;
                 return missionInfo;
             } finally
             {
@@ -149,7 +164,21 @@ namespace EliteReporter.Utils
                 yearTemplate.Dispose();
                 rewardTemplate.Dispose();
             }
-            return null;
+        }
+
+        private Tuple<string, double> getMissionType(Image<Gray, byte> sourceImage, string patternFilePath, double widthFactor, double heightFactor)
+        {
+            Image<Gray, byte> templateImage = new Image<Gray, byte>(patternFilePath); // Image A
+            templateImage = templateImage.Resize(widthFactor, Emgu.CV.CvEnum.Inter.Cubic);
+            string missionType = Path.GetFileName(patternFilePath).Replace(".bmp", "");
+            using (Image<Gray, float> result = sourceImage.MatchTemplate(templateImage, Emgu.CV.CvEnum.TemplateMatchingType.CcoeffNormed))
+            {
+                double[] minValues, maxValues;
+                Point[] minLocations, maxLocations;
+                result.MinMax(out minValues, out maxValues, out minLocations, out maxLocations);
+
+                return new Tuple<string, double>(missionType, maxValues[0]);
+            }
         }
     }
 }

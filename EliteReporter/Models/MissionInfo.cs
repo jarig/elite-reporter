@@ -11,6 +11,7 @@ namespace EliteReporter.Models
     public class MissionInfo
     {
         public string MissionName { get; set; }
+        public string MissionType { get; set; }
         public int Reward { get; set; }
 
         public DateTime? MissionTakenDateTime { get; set; }

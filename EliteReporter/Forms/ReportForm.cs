@@ -57,8 +57,8 @@ namespace EliteReporter
 
             if (missionListView.InvokeRequired)
             {
-                missionListView.BeginInvoke(callback, new object []{ pathToBmp });
-            }
+                missionListView.Invoke(callback, new object []{ pathToBmp });
+            }   
             else
             {
                 var result = analyzer.findAndAnalyzeMissionSummaryPage(pathToBmp);
@@ -274,6 +274,8 @@ namespace EliteReporter
         {
             vItem.Text = mInfo.MissionTakenDateTime.Value.ToString("dd.MM.yyyy HH:mm");
             vItem.SubItems[missionNameHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.MissionName);
+            if (mInfo.MissionType != null)
+                vItem.SubItems[missionTypeHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.MissionType);
             vItem.SubItems[startSystemHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.MissionTakenEDProfile.ToString());
             vItem.SubItems[rewardHeader.Index] = new ListViewItem.ListViewSubItem(vItem, mInfo.Reward.ToString());
             if (mInfo.MissionFinishedDateTime != null)

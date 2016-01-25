@@ -49,6 +49,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.missionTypeTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -57,7 +59,7 @@
             // 
             this.missionNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.missionNameTextBox.Location = new System.Drawing.Point(12, 33);
+            this.missionNameTextBox.Location = new System.Drawing.Point(12, 29);
             this.missionNameTextBox.Name = "missionNameTextBox";
             this.missionNameTextBox.Size = new System.Drawing.Size(434, 20);
             this.missionNameTextBox.TabIndex = 0;
@@ -80,7 +82,7 @@
             // 
             // rewardTextBox
             // 
-            this.rewardTextBox.Location = new System.Drawing.Point(103, 222);
+            this.rewardTextBox.Location = new System.Drawing.Point(103, 256);
             this.rewardTextBox.Name = "rewardTextBox";
             this.rewardTextBox.Size = new System.Drawing.Size(100, 20);
             this.rewardTextBox.TabIndex = 3;
@@ -104,7 +106,7 @@
             // changeButton
             // 
             this.changeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.changeButton.Location = new System.Drawing.Point(347, 263);
+            this.changeButton.Location = new System.Drawing.Point(347, 295);
             this.changeButton.Name = "changeButton";
             this.changeButton.Size = new System.Drawing.Size(99, 35);
             this.changeButton.TabIndex = 6;
@@ -115,7 +117,7 @@
             // closeButton
             // 
             this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.closeButton.Location = new System.Drawing.Point(12, 263);
+            this.closeButton.Location = new System.Drawing.Point(12, 295);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(75, 34);
             this.closeButton.TabIndex = 7;
@@ -178,7 +180,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(15, 225);
+            this.label5.Location = new System.Drawing.Point(15, 259);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(82, 13);
             this.label5.TabIndex = 14;
@@ -221,7 +223,7 @@
             this.groupBox1.Controls.Add(this.systemTakenTextBox);
             this.groupBox1.Controls.Add(this.stationTakenTextBox);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(12, 59);
+            this.groupBox1.Location = new System.Drawing.Point(12, 93);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(434, 69);
             this.groupBox1.TabIndex = 18;
@@ -238,18 +240,38 @@
             this.groupBox2.Controls.Add(this.dateFinishTextBox);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.stationFinishTextBox);
-            this.groupBox2.Location = new System.Drawing.Point(12, 134);
+            this.groupBox2.Location = new System.Drawing.Point(12, 168);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(434, 75);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mission Finished";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(12, 51);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(65, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Mission type";
+            // 
+            // missionTypeTextBox
+            // 
+            this.missionTypeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.missionTypeTextBox.Location = new System.Drawing.Point(12, 67);
+            this.missionTypeTextBox.Name = "missionTypeTextBox";
+            this.missionTypeTextBox.Size = new System.Drawing.Size(434, 20);
+            this.missionTypeTextBox.TabIndex = 20;
+            // 
             // EditMissionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(452, 309);
+            this.ClientSize = new System.Drawing.Size(452, 341);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.missionTypeTextBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label5);
@@ -295,5 +317,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox missionTypeTextBox;
     }
 }
