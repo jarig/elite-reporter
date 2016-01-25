@@ -20,6 +20,10 @@ Example: ![Alt text](/EliteReporter/Assets/3302_eng.bmp "3302")
 6. You can export results using Export button when quited the game(exported in json format).
    * Optionally you can go to Application->Settings and setup any program/script execution that can read provided json and publish results anywhere you want.
 
+#### Tips
+* Double click on item to change any attributes you like.
+* You can add missing mission types yourself, just place .bmp files with cropped images under Assets/mTypes folder(you'll see examples there). Filename you give would be mission type name.
+
 
 ### How it looks like
 
