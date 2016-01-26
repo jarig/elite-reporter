@@ -3,7 +3,7 @@
 Mission reporting tool for Elite Dangerous game.
 Uses mobile API with OCR to get information about mission name and start/end locations.
 Data can be exported anyhwere you like, for example to http://en.ed-board.net/.  
-[Check an example export script for that.](#edBoardExportExample)
+[Check an example export script for that.](https://gist.github.com/jarig/376368fc5093f841a612)
 
 
 If it doesn't work well try taking screenshot from ingame while in bulletin board and cut the year digits from left top corner, 
