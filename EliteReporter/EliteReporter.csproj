@@ -347,6 +347,9 @@
     <Content Include="Assets\mTypes\MultiStepCourierDelivery.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\mTypes\MultiStepFindAndDeliver.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\mTypes\PirateCargo.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

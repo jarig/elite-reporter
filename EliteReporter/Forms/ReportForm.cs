@@ -47,7 +47,12 @@ namespace EliteReporter
         {
             Trace.TraceInformation("File: " + e.FullPath + " " + e.ChangeType);
             Thread.Sleep(500); // wait until file is ready
-            analyzeScreenShot(e.FullPath);
+            try {
+                analyzeScreenShot(e.FullPath);
+            }catch (Exception ex)
+            {
+                toolStripStatusLabel1.Text = "Error during screen analysis: " + ex.Message;
+            }
         }
 
         private void analyzeScreenShot(string pathToBmp)
@@ -73,13 +78,13 @@ namespace EliteReporter
                 if (existingLvItem != null)
                 {
                     //finshing mission
-                    if (((MissionInfo)existingLvItem.Tag).MissionTakenDateTime.Value.Add(takenMisisonCoolDown) < DateTime.UtcNow)
+                    if (((MissionInfo)existingLvItem.Tag).MissionTakenDateTime.Value.Add(takenMisisonCoolDown) < DateTime.Now)
                     {
                         var edProfile = edapi.getProfile();
                         var missionInfo = (MissionInfo)existingLvItem.Tag;
                         if (missionInfo.MissionFinishedEDProfile == null)
                         {
-                            missionInfo.MissionFinishedDateTime = DateTime.UtcNow;
+                            missionInfo.MissionFinishedDateTime = DateTime.Now;
                             missionInfo.MissionFinishedEDProfile = edProfile;
                             fillMissionListViewItem(existingLvItem, missionInfo);
                         }
@@ -96,7 +101,7 @@ namespace EliteReporter
                     var edProfile = edapi.getProfile();
                     if (string.IsNullOrEmpty(commanderName))
                         commanderName = edProfile.CommanderName;
-                    result.MissionTakenDateTime = DateTime.UtcNow;
+                    result.MissionTakenDateTime = DateTime.Now;
                     result.MissionTakenEDProfile = edProfile;
                     ListViewItem lvItem = new ListViewItem();
                     lvItem.Tag = result;
