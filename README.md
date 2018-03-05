@@ -1,3 +1,5 @@
+# (!) Elite Dangerous has drastically changed, so this tool won't work for now, it requires massive re-work at a moment.
+
 # Elite Dangerous Mission Reporter
 
 Mission reporting tool for Elite Dangerous game.
